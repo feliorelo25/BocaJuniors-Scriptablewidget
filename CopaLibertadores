@@ -1,0 +1,17 @@
+// Configurar clave de API const apiKey = "APIKEY"; 
+// Obtener datos del próximo partido de Boca Juniors let url = "https://api.football-data.org/v2/teams/2061/matches?status=SCHEDULED"; 
+let req = new Request(url); req.headers = { "X-Auth-Token": apiKey }; let res = await req.loadJSON(); 
+let nextGameDate = "No se ha encontrado ningún partido planificado"; 
+// Valor por defecto en caso de que no haya datos if (res.matches && res.matches.length > 0) { let nextGame = res.matches[0]; 
+let nextGameDateUtc = new Date(nextGame.utcDate); let formattedDate = nextGameDateUtc.toLocaleString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }); 
+let formattedTime = nextGameDateUtc.toLocaleString('es-AR', { hour: 'numeric', minute: 'numeric' }); nextGameDate = formattedDate + " - " + formattedTime + " hs"; } 
+// Crear widget let widget = new ListWidget(); // Configurar widget widget.backgroundColor = new Color("#1C2C5C"); 
+let logoUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c9/Boca_escudo.png"; let logoReq = new Request(logoUrl); 
+let logo = await logoReq.loadImage(); let logoImg = widget.addImage(logo); logoImg.imageSize = new Size(60, 60); 
+logoImg.centerAlignImage(); let titleStack = widget.addStack(); 
+titleStack.centerAlignContent(); 
+let title1 = titleStack.addText("Próximo partido"); title1.font = Font.boldSystemFont(16); 
+title1.textColor = new Color("#F6DC54"); 
+widget.addSpacer(10); let date = widget.addText(nextGameDate); 
+date.font = Font.mediumSystemFont(14); date.textColor = new Color("#FFFFFF"); 
+// Presentar widget Script.setWidget(widget); Script.complete();
